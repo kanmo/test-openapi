@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: Spaces API
+  version: "0.1"
+servers:
+  - url: http://localhost:63342
+paths:
+  /users:
+    post:
+      operationId: RegisterUser
+      summary: Register User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+
+  /users/{id}:
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+    get:
+      operationId: GetUser
+      summary: View User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+    delete:
+      operationId: DeleteUser
+      summary: Delete User
+      responses:
+        '204':
+          description: No Content
+
+  /spaces:
+    post:
+      operationId: CreateSpace
+      summary: Create Space
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Space"
+  /spaces/{space_id}/messages:
+    parameters:
+      - name: space_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    post:
+      operationId: CreateMessage
+      summary: Create Message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+  /spaces/{space_id}/messages{message_id}:
+    parameters:
+      - name: space_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: message_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: ReadMessage
+      summary: Read Message
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    $ref: "#/components/schemas/Message"
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        password:
+          type: string
+      required:
+        - id
+        - name
+        - password
+    Space:
+      type: object
+      properties:
+        space_id:
+          type: integer
+        name:
+          type: string
+        owner:
+          type: string
+      required:
+        - space_id
+        - name
+        - owner
+    Message:
+      type: object
+      properties:
+        message_id:
+          type: integer
+        space_id:
+          type: integer
+        author:
+          type: string
+        content:
+          type: string
+      required:
+        - message_id
+        - space_id
+        - author
+        - content
+

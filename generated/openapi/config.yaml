@@ -1,0 +1,2 @@
+compatibility:
+  always-prefix-enum-values: true

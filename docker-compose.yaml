@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  mysql:
+    image: mysql:8.0.29
+    platform: linux/arm64
+    healthcheck:
+      test: mysqladmin ping -ppass
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: pass
+    ports:
+      - "13306:3306"
+    networks:
+      - db
+  migrate:
+    image: arigaio/atlas:latest
+    command: >
+      migrate apply
+      --url mysql://root:pass@mysql:3306/test
+    networks:
+      - db
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./migrations/:/migrations
+networks:
+  db:
